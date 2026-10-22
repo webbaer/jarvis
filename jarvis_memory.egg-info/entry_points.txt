@@ -1,2 +1,0 @@
-[console_scripts]
-jarvis-memory = jarvis_memory.cli:main
