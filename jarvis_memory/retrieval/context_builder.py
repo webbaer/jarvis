@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from jarvis_memory.config import ContextConfig
+from jarvis_memory.models import RetrievalResult
 from jarvis_memory.retrieval.hybrid import HybridRetriever, RetrievalFilters
 from jarvis_memory.store.fact_store import FactStore
 
@@ -17,8 +18,12 @@ class ContextBuilder:
         self._config = config
 
     def build_context(self, query: str, filters: RetrievalFilters | None = None) -> str:
-        facts = self._fact_store.get_current_facts()[: self._config.max_facts]
         chunks = self._retriever.search(query, top_k=self._config.max_chunks, filters=filters)
+        return self.format_context(chunks)
+
+    def format_context(self, chunks: list[RetrievalResult]) -> str:
+        """Render facts plus already retrieved chunks into the block sent to the LLM."""
+        facts = self._fact_store.get_current_facts()[: self._config.max_facts]
 
         lines: list[str] = ["[FACTS]"]
         for fact in facts:

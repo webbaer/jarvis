@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 
 import yaml
@@ -16,10 +16,21 @@ class EvalCase:
 
 
 @dataclass(slots=True)
+class EvalCaseResult:
+    id: str
+    query: str
+    expected_sources: list[str]
+    # 1-based rank of the first expected source within top k, None if missed.
+    rank: int | None
+    retrieved_sources: list[str]
+
+
+@dataclass(slots=True)
 class EvalMetrics:
     recall_at_k: float
     mrr: float
     cases: int
+    per_case: list[EvalCaseResult] = field(default_factory=list)
 
 
 def load_eval_cases(path: Path) -> list[EvalCase]:
@@ -39,6 +50,7 @@ def load_eval_cases(path: Path) -> list[EvalCase]:
 def evaluate(retriever: HybridRetriever, cases: list[EvalCase], k: int) -> EvalMetrics:
     hits = 0
     reciprocal_sum = 0.0
+    per_case: list[EvalCaseResult] = []
 
     for case in cases:
         results = retriever.search(case.query, top_k=k)
@@ -46,6 +58,15 @@ def evaluate(retriever: HybridRetriever, cases: list[EvalCase], k: int) -> EvalM
         if found_rank is not None:
             hits += 1
             reciprocal_sum += 1.0 / found_rank
+        per_case.append(
+            EvalCaseResult(
+                id=case.id,
+                query=case.query,
+                expected_sources=case.expected_sources,
+                rank=found_rank,
+                retrieved_sources=[r.source for r in results],
+            )
+        )
 
     n = len(cases)
     if n == 0:
@@ -55,6 +76,7 @@ def evaluate(retriever: HybridRetriever, cases: list[EvalCase], k: int) -> EvalM
         recall_at_k=hits / n,
         mrr=reciprocal_sum / n,
         cases=n,
+        per_case=per_case,
     )
 
 

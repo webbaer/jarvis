@@ -55,12 +55,24 @@ CREATE TABLE IF NOT EXISTS facts (
 );
 
 CREATE INDEX IF NOT EXISTS idx_facts_current ON facts(subject, attribute, status, valid_to);
+
+CREATE TABLE IF NOT EXISTS eval_runs (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    created_at TEXT NOT NULL,
+    k INTEGER NOT NULL,
+    cases INTEGER NOT NULL,
+    recall_at_k REAL NOT NULL,
+    mrr REAL NOT NULL,
+    dataset TEXT NOT NULL,
+    config_json TEXT NOT NULL,
+    per_case_json TEXT NOT NULL
+);
 """
 
 
-def connect(sqlite_path: Path) -> sqlite3.Connection:
+def connect(sqlite_path: Path, check_same_thread: bool = True) -> sqlite3.Connection:
     sqlite_path.parent.mkdir(parents=True, exist_ok=True)
-    conn = sqlite3.connect(sqlite_path)
+    conn = sqlite3.connect(sqlite_path, check_same_thread=check_same_thread)
     conn.row_factory = sqlite3.Row
     conn.execute("PRAGMA foreign_keys = ON;")
     return conn

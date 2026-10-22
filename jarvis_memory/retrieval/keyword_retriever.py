@@ -24,7 +24,7 @@ class KeywordRetriever:
             return []
 
         sql = """
-        SELECT c.id AS chunk_id, c.text, c.source, c.doc_type, c.doc_date,
+        SELECT c.id AS chunk_id, c.document_id, c.text, c.source, c.doc_type, c.doc_date,
                bm25(chunks_fts) AS rank_score
         FROM chunks_fts
         JOIN chunks c ON c.id = chunks_fts.chunk_id
@@ -51,9 +51,9 @@ class KeywordRetriever:
         rows = self._conn.execute(sql, params).fetchall()
         results: list[RetrievalResult] = []
         for idx, row in enumerate(rows, start=1):
-            # Smaller BM25 score is better; convert for a unified descending score scale.
-            bm25_score = float(row["rank_score"])
-            score = 1.0 / (1.0 + max(0.0, bm25_score))
+            # FTS5 bm25() is negative, more negative = better. Map relevance to [0, 1), higher = better.
+            relevance = max(0.0, -float(row["rank_score"]))
+            score = relevance / (1.0 + relevance)
             results.append(
                 RetrievalResult(
                     chunk_id=str(row["chunk_id"]),
@@ -63,6 +63,8 @@ class KeywordRetriever:
                     doc_date=row["doc_date"],
                     score=score,
                     keyword_rank=idx,
+                    keyword_score=score,
+                    document_id=str(row["document_id"]),
                 )
             )
         return results

@@ -33,6 +33,8 @@ class VectorRetriever:
                     doc_date=meta.get("doc_date"),
                     score=score,
                     vector_rank=item["rank"],
+                    vector_score=score,
+                    document_id=meta.get("document_id"),
                 )
             )
         return results

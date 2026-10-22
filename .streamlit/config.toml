@@ -1,0 +1,10 @@
+# Local-only defaults for the Jarvis Memory UI.
+[server]
+address = "127.0.0.1"
+port = 8501
+headless = true
+# Keep in sync with JARVIS_MAX_UPLOAD_MB / UploadConfig.max_file_bytes (MB).
+maxUploadSize = 25
+
+[browser]
+gatherUsageStats = false

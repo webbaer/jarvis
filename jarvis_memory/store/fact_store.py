@@ -95,6 +95,16 @@ class FactStore:
             ).fetchall()
         return [self._to_fact_record(r) for r in rows]
 
+    def get_fact(self, fact_id: int) -> FactRecord | None:
+        row = self._conn.execute("SELECT * FROM facts WHERE id = ?", (fact_id,)).fetchone()
+        return self._to_fact_record(row) if row else None
+
+    def get_all_facts(self) -> list[FactRecord]:
+        rows = self._conn.execute(
+            "SELECT * FROM facts ORDER BY subject, attribute, valid_from ASC, created_at ASC"
+        ).fetchall()
+        return [self._to_fact_record(r) for r in rows]
+
     def get_fact_history(self, subject: str, attribute: str) -> list[FactRecord]:
         rows = self._conn.execute(
             """

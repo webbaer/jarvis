@@ -4,6 +4,7 @@ from typing import Any
 
 import chromadb
 from chromadb.api.models.Collection import Collection
+from chromadb.config import Settings
 
 from jarvis_memory.store.embeddings import Embedder
 
@@ -11,7 +12,10 @@ from jarvis_memory.store.embeddings import Embedder
 class ChromaVectorStore:
     def __init__(self, persist_directory: str, embedder: Embedder, collection_name: str = "jarvis_chunks") -> None:
         self._embedder = embedder
-        self._client = chromadb.PersistentClient(path=persist_directory)
+        self._client = chromadb.PersistentClient(
+            path=persist_directory,
+            settings=Settings(anonymized_telemetry=False),
+        )
         self._collection: Collection = self._client.get_or_create_collection(name=collection_name)
 
     def upsert_chunks(self, ids: list[str], texts: list[str], metadatas: list[dict[str, Any]]) -> None:

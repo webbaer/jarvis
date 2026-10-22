@@ -45,6 +45,14 @@ def split_into_chunks(text: str, params: ChunkingParams) -> list[str]:
     return merged
 
 
+def detect_overlap(previous: str, current: str, overlap_chars: int) -> int:
+    """Length of the prefix of `current` that was carried over from `previous`."""
+    carry = _overlap_tail(previous, overlap_chars)
+    if carry and current.startswith(carry):
+        return len(carry)
+    return 0
+
+
 def _overlap_tail(text: str, overlap_chars: int) -> str:
     if overlap_chars <= 0 or len(text) <= overlap_chars:
         return text if len(text) <= overlap_chars else ""

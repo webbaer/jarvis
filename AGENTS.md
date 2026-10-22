@@ -10,8 +10,8 @@ Lokales RAG-/Gedaechtnismodul fuer Jarvis: Ingestion (md/txt/pdf/eml) → SQLite
 
 ```bash
 source .venv/bin/activate
-pip install -e '.[dev]'
-python -m pytest -q          # muss vor jedem Abschluss gruen sein
+make install                 # pip install -e '.[dev,api,ui]'
+python -m pytest -q          # muss vor jedem Abschluss gruen sein (make test)
 jarvis-memory eval --k 6     # bei Aenderungen an Chunking/Retrieval vorher/nachher vergleichen
 ```
 
@@ -25,6 +25,13 @@ jarvis-memory eval --k 6     # bei Aenderungen an Chunking/Retrieval vorher/nach
 6. **Fakten-Semantik bewahren.** `FactStore` loescht nie, sondern setzt `status='superseded'` und `valid_to`. Die Historie muss erhalten bleiben.
 7. **SQL nur parametrisiert** (`?`-Platzhalter). Keine f-Strings oder String-Konkatenation mit Nutzereingaben.
 8. **Git:** Arbeit auf Feature-Branches von `dev`. Kein Push auf `main`, kein Force-Push, kein `reset --hard`/`clean -f`, kein `--no-verify`. Committen und pushen nur auf Aufforderung.
+
+## Schichten
+
+- `jarvis_memory/` enthaelt die gesamte Logik. Neue Faehigkeiten kommen hierher, nach aussen ueber `jarvis_memory/service.py` (`MemoryService`).
+- `api/` ist eine duenne HTTP-Schicht: Validierung, Statuscodes, Upload-Pruefung, Job-Tracking. Keine Pipeline-Logik kopieren.
+- `ui/` spricht nur HTTP mit der API (`ui/client.py`) und importiert weder `jarvis_memory` noch `api` (Test: `tests/test_ui_smoke.py`).
+- Server binden nur an `127.0.0.1`; keine Telemetrie, kein CORS, keine Auth-Attrappen.
 
 ## Konventionen
 
