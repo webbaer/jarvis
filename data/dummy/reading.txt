@@ -1,0 +1,1 @@
+Aktuelle Buecher: Designing Data-Intensive Applications, Deep Learning with Python.

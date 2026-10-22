@@ -1,0 +1,16 @@
+Metadata-Version: 2.4
+Name: jarvis-memory
+Version: 0.1.0
+Summary: Local-first memory and RAG module for Jarvis
+Requires-Python: >=3.11
+Description-Content-Type: text/markdown
+Requires-Dist: chromadb>=0.5.5
+Requires-Dist: pypdf>=4.2.0
+Requires-Dist: PyYAML>=6.0.1
+Provides-Extra: dev
+Requires-Dist: pytest>=8.0.0; extra == "dev"
+Provides-Extra: embeddings
+Requires-Dist: sentence-transformers>=3.0.0; extra == "embeddings"
+
+# jarvis
+ki group project

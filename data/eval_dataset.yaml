@@ -1,0 +1,49 @@
+cases:
+  - id: q1
+    query: "Wann ist mein Mathe-Tutorium?"
+    expected_sources:
+      - "data/dummy/calendar.md"
+  - id: q2
+    query: "Welche Ernährung bevorzuge ich?"
+    expected_sources:
+      - "data/dummy/preferences.md"
+  - id: q3
+    query: "Was ist meine aktuelle Adresse?"
+    expected_sources:
+      - "data/dummy/profile.md"
+  - id: q4
+    query: "Wann fliege ich nach Lissabon?"
+    expected_sources:
+      - "data/dummy/travel.eml"
+  - id: q5
+    query: "Welche Bücher lese ich derzeit?"
+    expected_sources:
+      - "data/dummy/reading.txt"
+  - id: q6
+    query: "Wann ist meine Zahnarztkontrolle?"
+    expected_sources:
+      - "data/dummy/health.md"
+  - id: q7
+    query: "Welche Projektabgabe ist am Freitag?"
+    expected_sources:
+      - "data/dummy/university.md"
+  - id: q8
+    query: "Wie lange dauert mein Arbeitsweg?"
+    expected_sources:
+      - "data/dummy/routine.md"
+  - id: q9
+    query: "Welche Sprache nutze ich im Alltag meistens?"
+    expected_sources:
+      - "data/dummy/profile.md"
+  - id: q10
+    query: "Welches Cafe ist mein Standardort fuer Meetings?"
+    expected_sources:
+      - "data/dummy/preferences.md"
+  - id: q11
+    query: "Was steht in meinem Lernplan fuer Dienstag?"
+    expected_sources:
+      - "data/dummy/university.md"
+  - id: q12
+    query: "Wann starte ich mit Deep-Work am Morgen?"
+    expected_sources:
+      - "data/dummy/routine.md"
